@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sprint-assistant
+  namespace: sprint-assistant
+  labels:
+    app: sprint-assistant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sprint-assistant
+  template:
+    metadata:
+      labels:
+        app: sprint-assistant
+    spec:
+      containers:
+      - name: sprint-assistant
+        image: sprint-assistant:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - secretRef:
+            name: jira-credentials
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
