@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sprint-assistant
+  namespace: sprint-assistant
+spec:
+  type: NodePort
+  selector:
+    app: sprint-assistant
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30080
